@@ -1,2 +1,2 @@
 #!/bin/bash
-python bot.py
+project/discord_bot/bot.py
