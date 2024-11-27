@@ -14,7 +14,7 @@ class Moderation(commands.Cog):
         Usage: !officer or !Officer
         """
         # Get the support channel
-        support_channel = self.bot.get_channel(1112369312049668126)
+        support_channel = self.bot.get_channel(1196120590243856544)
         if not support_channel:
             await ctx.send("Error: Support channel not found. Please contact an administrator.")
             return
