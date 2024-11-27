@@ -3,8 +3,26 @@ import discord
 from discord.ext import commands
 from config import TOKEN, COMMAND_PREFIX
 from utils.logger import setup_logger
+from flask import Flask
+import threading
 
 logger = setup_logger()
+# Flask setup
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is alive!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = threading.Thread(target=run)
+    t.start()
+
+# Call keep_alive() before bot runs
+keep_alive()
 
 class DiscordBot(commands.Bot):
     def __init__(self):
@@ -42,3 +60,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
