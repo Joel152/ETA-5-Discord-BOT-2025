@@ -36,8 +36,8 @@ class Deployment(commands.Cog):
             inline=False
         )
         embed.add_field(
-            name="Site?",
-            value="Site-45: :Yes~2:",
+            name="Site",
+            value="Site-45: ✅",
             inline=False
         )
         embed.add_field(
