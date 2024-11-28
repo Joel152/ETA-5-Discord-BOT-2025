@@ -16,7 +16,7 @@ class Deployment(commands.Cog):
         Required role: Deployment role
         """
         # Get the deployment channel
-        deployment_channel = self.bot.get_channel(1112369312049668126)
+        deployment_channel = self.bot.get_channel(1091568165147906098)
         if not deployment_channel:
             await ctx.send("Error: Deployment channel not found. Please contact an administrator.")
             return
