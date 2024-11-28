@@ -8,7 +8,7 @@ class Status(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         """Set the bot's status when ready"""
-        activity = discord.Activity(type=discord.ActivityType.watching, name="Tutorials")
+        activity = discord.Activity(type=discord.ActivityType.watching, name="Chat")
         await bot.change_presence(status=discord.Status.online, activity=activity)
 
 async def setup(bot):
