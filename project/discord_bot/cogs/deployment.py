@@ -28,7 +28,7 @@ class Deployment(commands.Cog):
         embed = discord.Embed(
             title="Deployment Poll",
             description="Vote below.",
-            color=discord.Color.blue()
+            color=discord.Color.black()
         )
         embed.add_field(
             name="Deployment?",
