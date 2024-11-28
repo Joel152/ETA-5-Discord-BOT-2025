@@ -8,9 +8,8 @@ class Status(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         """Set the bot's status when ready"""
-        activity = discord.Game(name="Managing the Community")
-        await self.bot.change_presence(status=discord.Status.online, activity=activity)
-        self.bot.logger.info(f"Bot status set to: Managing the Community")
+        activity = discord.Activity(type=discord.ActivityType.watching, name="Tutorials")
+        await bot.change_presence(status=discord.Status.online, activity=activity)
 
 async def setup(bot):
     await bot.add_cog(Status(bot))
