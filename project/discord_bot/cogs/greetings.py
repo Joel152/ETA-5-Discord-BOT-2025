@@ -1,36 +1,49 @@
 import discord
 from discord.ext import commands
+from config import WELCOME_CHANNEL_ID
 
 class Greetings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.welcome_image_path = "assets/welcome_image.png"  # Path to your welcome image
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        # Replace with your desired channel ID
-        specific_channel_id = 1197904372189888623  # Replace YOUR_CHANNEL_ID with the specific channel ID
-        channel = member.guild.get_channel(1197904372189888623)
+        # Get the welcome channel
+        welcome_channel = self.bot.get_channel(WELCOME_CHANNEL_ID)
+        if not welcome_channel:
+            return
 
-        if channel:
-            # Create the embed for the welcome message
+        # Create the welcome message
+        welcome_text = (
+            f"Hello {member.mention} welcome to ETA-5 \"Jäeger Bombers\",\n"
+            f"Make sure to read the #📋 information\n"
+            f"Learn More about us in #📘 guide\n"
+            f"Ping the host of the tryout and get your role #🔮non-verified-chat\n\n"
+            f"Please visit our website to learn more about sub-divisions and other related topics.\n"
+            f"https://sites.google.com/view/eta-5-jaegerbombers/home?authuser=0\n\n"
+            f"Welcome to the team."
+        )
+
+        try:
+            # Create an embed for a more stylized message
             embed = discord.Embed(
-                title='ETA-5 "Jäger Bombers"',
-                description=(
-                    f"Hello {member.mention}, welcome to ETA-5 \"Jäger Bombers\".\n\n"
-                    "Make sure to read the <#CHANNEL_ID_FOR_INFORMATION> :information:\n"
-                    "Learn more about us in <#CHANNEL_ID_FOR_GUIDE> :guide:\n"
-                    "Ping the host of the tryout and get your role <#CHANNEL_ID_FOR_NON_VERIFIED_CHAT> :non-verified-chat:\n\n"
-                    "Please visit our website to learn more about sub-divisions and other related topics:\n"
-                    "[ETA-5 Website](https://sites.google.com/view/eta-5-jaegerbombers/home)\n\n"
-                    "Welcome to the team."
-                ),
-                color=discord.Color.black()
+                title="Welcome to ETA-5 \"Jäeger Bombers\"",
+                description=welcome_text,
+                color=discord.Color.blue()
             )
-            embed.set_image(url="WELCOME_IMAGE_URL")  # Replace with the URL of your welcome image
-            embed.set_footer(text='ETA-5 | "Jäger Bombers"', icon_url="https://cdn.discordapp.com/attachments/1060216735992647700/1219298237505339514/image_7.png?ex=67492d39&is=6747dbb9&hm=b5ecc25771973bc5b113847cc06ad05887e7b01b3c1f263f46191cf6a9e7ecbc&")  # Optional footer icon URL
 
-            # Send the embed message to the specific channel
-            await channel.send(embed=embed)
+            # Add the welcome image to the embed
+            # Replace 'image_url' with your actual image URL or use file attachment
+            embed.set_image(url="attachment://welcome_image.png")
+
+            # Send the welcome message with the image
+            await welcome_channel.send(
+                file=discord.File(self.welcome_image_path),
+                embed=embed
+            )
+        except Exception as e:
+            print(f"Error sending welcome message: {e}")
 
     @commands.command()
     async def hello(self, ctx):
