@@ -8,7 +8,7 @@ class Greetings(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         # Replace with your desired channel ID
-        specific_channel_id = YOUR_CHANNEL_ID  # Replace YOUR_CHANNEL_ID with the specific channel ID
+        specific_channel_id = 1197904372189888623  # Replace YOUR_CHANNEL_ID with the specific channel ID
         channel = member.guild.get_channel(1197904372189888623)
 
         if channel:
