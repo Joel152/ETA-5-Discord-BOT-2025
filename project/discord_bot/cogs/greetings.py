@@ -5,12 +5,12 @@ from config import WELCOME_CHANNEL_ID
 class Greetings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.welcome_image_path = "assets/welcome_image.png"  # Path to your welcome image
+        self.welcome_image_path = "project/discord_bot/assests/welcome_image.png"  # Path to your welcome image
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
         # Get the welcome channel
-        welcome_channel = self.bot.get_channel(WELCOME_CHANNEL_ID)
+        welcome_channel = self.bot.get_channel(987654321)
         if not welcome_channel:
             return
 
@@ -30,12 +30,12 @@ class Greetings(commands.Cog):
             embed = discord.Embed(
                 title="Welcome to ETA-5 \"Jäeger Bombers\"",
                 description=welcome_text,
-                color=discord.Color.blue()
+                color=discord.Color.black()
             )
 
             # Add the welcome image to the embed
             # Replace 'image_url' with your actual image URL or use file attachment
-            embed.set_image(url="attachment://welcome_image.png")
+            embed.set_image(url="project/discord_bot/assests/welcome_image.png")
 
             # Send the welcome message with the image
             await welcome_channel.send(
