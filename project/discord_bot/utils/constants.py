@@ -3,7 +3,7 @@ Constants used throughout the bot
 """
 
 # Bot Activity
-DEFAULT_ACTIVITY = "Managing the Community"
+DEFAULT_ACTIVITY = "Wathcing Chat"
 DEFAULT_STATUS = "online"
 
 # Message Colors
