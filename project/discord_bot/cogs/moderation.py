@@ -46,33 +46,39 @@ class Moderation(commands.Cog):
         Required role: Deployment role
         """
         # Get the deployment channel
-        deployment_channel = self.bot.get_channel(DEPLOYMENT_CHANNEL_ID)
+        deployment_channel = self.bot.get_channel(1091568165147906098)
         if not deployment_channel:
             await ctx.send("Error: Deployment channel not found. Please contact an administrator.")
             return
 
-        # Create the deployment poll message
+        # Create the deployment poll embed
         current_time = datetime.now().strftime("%H:%M")
         current_date = datetime.now().strftime("%Y-%m-%d")
-        
-        message = (
-            "Deployment Poll\n"
-            "------------------------------\n"
-            f"Deployment?\n"
-            f"Host: {ctx.author.mention}\n"
-            "------------------------------\n"
-            "Site?\n"
-            "Site-45: :Yes~2:\n"
-            "------------------------------\n"
-            "3+ reactions\n"
-            f"Time: {current_time}\n"
-            f"Date: {current_date}\n"
-            "------------------------------\n"
-            "Vote below."
-        )
 
-        # Send the message and add the initial reaction
-        poll_message = await deployment_channel.send(message)
+        embed = discord.Embed(
+            title="Deployment Poll",
+            description="Vote below.",
+            color=discord.Color.blue()
+        )
+        embed.add_field(
+            name="Deployment?",
+            value=f"Host: {ctx.author.mention}",
+            inline=False
+        )
+        embed.add_field(
+            name="Site?",
+            value="Site-45: :Yes~2:",
+            inline=False
+        )
+        embed.add_field(
+            name="Reactions Needed",
+            value="3+ reactions",
+            inline=False
+        )
+        embed.set_footer(text=f"Time: {current_time} | Date: {current_date}")
+        
+        # Send the embed message and add the initial reaction
+        poll_message = await deployment_channel.send(embed=embed)
         await poll_message.add_reaction('✅')
         
         # Confirm to the user
@@ -81,7 +87,7 @@ class Moderation(commands.Cog):
     @dep.error
     async def dep_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
-            await ctx.send(f"You need the deployment role to use this command.")
+            await ctx.send("You need the deployment role to use this command.")
         else:
             await ctx.send(f"An error occurred: {str(error)}")
 
