@@ -13,13 +13,13 @@ class Officer(commands.Cog):
         Usage: !dmt or !Dmt
         """
         # Get the support channel
-        support_channel = self.bot.get_channel(1251838912662339646)
+        support_channel = self.bot.get_channel(MOD_SUPPORT_CHANNEL_ID)
         if not support_channel:
             await ctx.send("Error: Support channel not found. Please contact an administrator.")
             return
 
         # Get the officer role
-        officer_role = ctx.guild.get_role(1202649275130183760)
+        officer_role = ctx.guild.get_role(MOD_ROLE_ID)
         if not officer_role:
             await ctx.send("Error: Mod role not found. Please contact an administrator.")
             return
