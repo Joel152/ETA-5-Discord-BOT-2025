@@ -7,20 +7,20 @@ class mod(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=['dmt'])
-    async def officer(self, ctx):
+    async def dmt(self, ctx):
         """
         Ping a Discord Mod for help in the support channel
         Usage: !dmt or !Dmt
         """
         # Get the support channel
-        support_channel = self.bot.get_channel(MOD_SUPPORT_CHANNEL_ID)
+        mod_channel = self.bot.get_channel(MOD_SUPPORT_CHANNEL_ID)
         if not support_channel:
             await ctx.send("Error: Support channel not found. Please contact an administrator.")
             return
 
         # Get the officer role
         officer_role = ctx.guild.get_role(MOD_ROLE_ID)
-        if not officer_role:
+        if not mod_role:
             await ctx.send("Error: Mod role not found. Please contact an administrator.")
             return
 
