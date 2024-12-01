@@ -1,4 +1,4 @@
-# Discord Bot
+# ETA-5 OS
 
 A modular Discord bot built with discord.py.
 
