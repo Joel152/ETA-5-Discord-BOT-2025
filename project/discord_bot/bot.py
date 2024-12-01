@@ -1,8 +1,9 @@
 import asyncio
 import discord
 from discord.ext import commands
-from config import TOKEN, COMMAND_PREFIX
+from config import TOKEN, COMMAND_PREFIX, PORT
 from utils.logger import setup_logger
+from webserver import setup_webserver
 
 logger = setup_logger()
 
@@ -13,9 +14,14 @@ class DiscordBot(commands.Bot):
         intents.members = True
         super().__init__(command_prefix=COMMAND_PREFIX, intents=intents)
         self.logger = logger
+        self.web_server = None
 
     async def setup_hook(self):
         try:
+            # Setup web server first to ensure it's running before bot setup
+            self.web_server = await setup_webserver(PORT)
+            self.logger.info('Web server initialized successfully')
+            
             # Load all cogs
             await self.load_extension('cogs.greetings')
             await self.load_extension('cogs.utilities')
@@ -30,12 +36,18 @@ class DiscordBot(commands.Bot):
             
             self.logger.info('All extensions loaded successfully')
         except Exception as e:
-            self.logger.error(f'Error loading extensions: {str(e)}')
+            self.logger.error(f'Error during setup: {str(e)}')
             raise
         
     async def on_ready(self):
         self.logger.info(f'{self.user} has connected to Discord!')
         self.logger.info(f'Bot is in {len(self.guilds)} guilds')
+        self.logger.info(f'Web server running on port {PORT}')
+
+    async def close(self):
+        if self.web_server:
+            await self.web_server.cleanup()
+        await super().close()
 
 async def main():
     try:
