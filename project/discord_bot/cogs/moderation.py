@@ -5,7 +5,7 @@ from config import (
     OFFICER_ROLE_ID,
     SUPPORT_CHANNEL_ID,
     MOD_ROLE_ID,
-    MOD_SUPPORT_CHANNEL_ID
+    MOD_CHANNEL_ID
 )
 from utils.report_templates import REPORT_TEMPLATES
 
@@ -13,11 +13,11 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['Officer'])
+    @commands.command(aliases=['mod'])
     async def officer(self, ctx):
         """
         Ping officers for help in the support channel
-        Usage: !officer or !Officer
+        Usage: !officer or !mod
         """
         support_channel = self.bot.get_channel(SUPPORT_CHANNEL_ID)
         if not support_channel:
