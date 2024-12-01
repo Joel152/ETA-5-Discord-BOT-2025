@@ -83,7 +83,7 @@ class Moderation(commands.Cog):
         message_link: str = None
     ):
         """Slash command version of the dmt command"""
-        mod_channel = self.bot.get_channel(MOD_CHANNEL_ID)
+        mod_channel = self.bot.get_channel(MOD_SUPPORT_CHANNEL_ID)
         if not mod_channel:
             await interaction.response.send_message(
                 "Error: Mod channel not found. Please contact an administrator.",
