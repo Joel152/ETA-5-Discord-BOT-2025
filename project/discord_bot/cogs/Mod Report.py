@@ -9,7 +9,7 @@ class Officer(commands.Cog):
     @commands.command(aliases=['dmt'])
     async def officer(self, ctx):
         """
-        Ping officers for help in the support channel
+        Ping a Discord Mod for help in the support channel
         Usage: !dmt or !Dmt
         """
         # Get the support channel
@@ -37,4 +37,4 @@ class Officer(commands.Cog):
         await ctx.send(f"Mods have been notified and will assist you soon!")
 
 async def setup(bot):
-    await bot.add_cog(Officer(bot))
+    await bot.add_cog(dmt(bot))
