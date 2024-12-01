@@ -8,7 +8,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 COMMAND_PREFIX = '!'
 
 # Web Server Configuration
-PORT = int(os.getenv('PORT', '8080'))  # Render expects PORT environment variable
+PORT = int(os.getenv('PORT', '10000'))  # Render expects PORT environment variable
 
 # Role and Channel IDs
 OFFICER_ROLE_ID = int(os.getenv('OFFICER_ROLE_ID', '123456789'))
