@@ -5,7 +5,7 @@ from config import (
     OFFICER_ROLE_ID,
     SUPPORT_CHANNEL_ID,
     MOD_ROLE_ID,
-    MOD_SUPPORT_CHANNEL_I
+    MOD_SUPPORT_CHANNEL_ID
 )
 from utils.report_templates import REPORT_TEMPLATES
 
