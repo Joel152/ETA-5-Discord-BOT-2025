@@ -1,5 +1,6 @@
 from aiohttp import web
 import logging
+import os
 
 logger = logging.getLogger('discord_bot')
 
@@ -11,10 +12,17 @@ async def setup_webserver(port):
     """Setup a basic web server for Render deployment"""
     app = web.Application()
     app.router.add_get('/', health_check)
+    app.router.add_get('/health', health_check)
     
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', port)
+    
+    # Ensure we're binding to 0.0.0.0 and using the PORT from environment
+    site = web.TCPSite(
+        runner, 
+        host='0.0.0.0',
+        port=int(os.getenv('PORT', port))
+    )
     
     try:
         await site.start()
