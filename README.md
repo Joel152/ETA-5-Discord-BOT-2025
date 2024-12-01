@@ -41,4 +41,4 @@ A modular Discord bot built with discord.py.
   - `utilities.py` - Utility commands
   - `officer.py` - Officer Commands
   - `deployment.py` - Deployment Commands
-  - 
+  - `status.py` - Bot status modual 
