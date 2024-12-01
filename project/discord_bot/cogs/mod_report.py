@@ -2,39 +2,40 @@ import discord
 from discord.ext import commands
 from config import MOD_ROLE_ID, MOD_SUPPORT_CHANNEL_ID
 
-class dmt(commands.Cog):
+class Dmt(commands.Cog):  # Class name should be capitalized as per PEP-8
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['dmt'])
+    @commands.command(aliases=['dmt'])  # Define 'dmt' as the alias
     async def dmt(self, ctx):
         """
         Ping a Discord Mod for help in the support channel
         Usage: !dmt or !Dmt
         """
         # Get the support channel
-        mod_channel = self.bot.get_channel(MOD_SUPPORT_CHANNEL_ID)
+        support_channel = self.bot.get_channel(MOD_SUPPORT_CHANNEL_ID)
         if not support_channel:
             await ctx.send("Error: Support channel not found. Please contact an administrator.")
             return
 
-        # Get the officer role
-        officer_role = ctx.guild.get_role(MOD_ROLE_ID)
+        # Get the mod role
+        mod_role = ctx.guild.get_role(MOD_ROLE_ID)
         if not mod_role:
             await ctx.send("Error: Mod role not found. Please contact an administrator.")
             return
 
-        # Create message with user mention, channel link, and officer ping
+        # Create message with user mention, channel link, and mod ping
         message = (
             f"{ctx.author.mention} needs help in {ctx.channel.mention}\n"
-            f"{officer_role.mention}"
+            f"{mod_role.mention}"
         )
 
         # Send the message in the support channel
         await support_channel.send(message)
         
         # Confirm to the user
-        await ctx.send(f"Mods have been notified and will assist you soon!")
+        await ctx.send("Mods have been notified and will assist you soon!")
 
+# Setup function to add the cog
 async def setup(bot):
-    await bot.add_cog(dmt(bot))
+    await bot.add_cog(Dmt(bot))
