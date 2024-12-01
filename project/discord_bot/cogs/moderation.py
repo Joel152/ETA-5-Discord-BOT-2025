@@ -43,7 +43,7 @@ class Moderation(commands.Cog):
         Ping moderators for help
         Usage: !dmt [report_type] [message_link]
         """
-        mod_channel = self.bot.get_channel(MOD_CHANNEL_ID)
+        mod_channel = self.bot.get_channel(MOD_SUPPORT_CHANNEL_ID)
         if not mod_channel:
             await ctx.send("Error: Mod channel not found. Please contact an administrator.")
             return
