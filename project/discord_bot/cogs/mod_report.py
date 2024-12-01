@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from config import MOD_ROLE_ID, MOD_SUPPORT_CHANNEL_ID
 
-class mod(commands.Cog):
+class dmt(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
