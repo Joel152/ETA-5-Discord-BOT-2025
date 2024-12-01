@@ -37,11 +37,11 @@ class DiscordBot(commands.Bot):
             # Load all cogs
             await self.load_extension('cogs.greetings')
             await self.load_extension('cogs.utilities')
+            await self.load_extension('cogs.moderation')
             await self.load_extension('cogs.officer')    # Updated
             await self.load_extension('cogs.deployment') # Updated
             await self.load_extension('cogs.member_welcome')
             await self.load_extension('cogs.status')
-            await self.load_extension('cogs.mod_report')
             await self.load_extension('utils.error_handler')
             self.logger.info('All extensions loaded successfully')
         except Exception as e:
