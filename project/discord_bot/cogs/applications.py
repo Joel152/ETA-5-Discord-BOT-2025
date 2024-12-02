@@ -4,7 +4,7 @@ from discord import app_commands
 from discord.ui import Button, View
 import asyncio
 from datetime import datetime
-from ..config import (
+from config import (
     APPLICATIONS_CHANNEL_ID,
     RESULTS_CHANNEL_ID,
     APP_READ_ID,
