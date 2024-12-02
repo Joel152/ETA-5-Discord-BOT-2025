@@ -1,7 +1,7 @@
 import discord
 from discord.ui import Button, View
 from datetime import datetime
-from ...config import ADD_READ_ID, RESULTS_CHANNEL_ID
+from config import ADD_READ_ID, RESULTS_CHANNEL_ID
 
 class ApplicationView(View):
     def __init__(self, application_id: str):
