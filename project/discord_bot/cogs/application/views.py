@@ -3,17 +3,17 @@ from discord.ui import Button, View
 from datetime import datetime
 from ...config import APP_READ_ID, RESULTS_CHANNEL_ID
 
-class ApplicationView(View):
+class ApplicationView(discord.ui.View):
     def __init__(self, application_id: str):
         super().__init__(timeout=None)
         self.application_id = application_id
 
     @discord.ui.button(label="Accept", style=discord.ButtonStyle.green, custom_id="accept")
-    async def accept_button(self, interaction: discord.Interaction, button: Button):
+    async def accept_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.process_decision(interaction, "accepted")
 
     @discord.ui.button(label="Deny", style=discord.ButtonStyle.red, custom_id="deny")
-    async def deny_button(self, interaction: discord.Interaction, button: Button):
+    async def deny_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.process_decision(interaction, "denied")
 
     async def process_decision(self, interaction: discord.Interaction, decision: str):
