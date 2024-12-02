@@ -1,4 +1,4 @@
-from .application import Application
+from .application import Applications
 
 async def setup(bot):
-    await bot.add_cog(Application(bot))
+    await bot.add_cog(Applications(bot))
