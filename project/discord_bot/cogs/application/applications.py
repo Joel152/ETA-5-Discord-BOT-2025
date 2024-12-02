@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 import asyncio
 from datetime import datetime
 
-from config import APPLICATIONS_CHANNEL_ID, SPREADSHEET_ID
+from config import APPLICATIONS_CHANNEL_ID, GOOGLE_SPREADSHEET_ID
 from utils.google_forms import GoogleFormsAPI
 from views import ApplicationView
 from embeds import create_application_embed
