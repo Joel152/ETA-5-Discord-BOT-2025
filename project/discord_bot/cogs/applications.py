@@ -8,7 +8,7 @@ from config import (
     APPLICATIONS_CHANNEL_ID,
     RESULTS_CHANNEL_ID,
     APP_READ_ID,
-    SPREADSHEET_ID
+    GOOGLE_SPREADSHEET_ID
 )
 from ..utils.google_forms import GoogleFormsAPI
 
