@@ -26,6 +26,7 @@ class DiscordBot(commands.Bot):
             await self.load_extension('cogs.greetings')
             await self.load_extension('cogs.utilities')
             await self.load_extension('cogs.moderation')
+            await self.load_extension('cogs.applications')
             await self.load_extension('cogs.deployment')
             await self.load_extension('cogs.member_welcome')
             await self.load_extension('cogs.status')
