@@ -10,7 +10,7 @@ from config import (
     APP_READ_ID,
     GOOGLE_SPREADSHEET_ID
 )
-from ..utils.google_forms import GoogleFormsAPI
+from utils.google_forms import GoogleFormsAPI
 
 class ApplicationView(View):
     def __init__(self, application_id: str):
