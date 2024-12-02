@@ -29,7 +29,7 @@ class DiscordBot(commands.Bot):
             await self.load_extension('cogs.deployment')
             await self.load_extension('cogs.member_welcome')
             await self.load_extension('cogs.status')
-            await self.load_extension('cogs.application')
+            await self.load_extension('cogs.applications')
             await self.load_extension('utils.error_handler')
             
             # Sync slash commands
