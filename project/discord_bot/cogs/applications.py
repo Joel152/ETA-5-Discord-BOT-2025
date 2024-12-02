@@ -26,7 +26,7 @@ class ApplicationView(View):
         await self.process_decision(interaction, "denied")
 
     async def process_decision(self, interaction: discord.Interaction, decision: str):
-        if not any(role.id == MOD_ROLE_ID for role in interaction.user.roles):
+        if not any(role.id == APP_READ_ID for role in interaction.user.roles):
             await interaction.response.send_message("You don't have permission to do this!", ephemeral=True)
             return
 
