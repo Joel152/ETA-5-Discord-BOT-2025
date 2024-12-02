@@ -5,8 +5,8 @@ from datetime import datetime
 
 from config import APPLICATIONS_CHANNEL_ID, GOOGLE_SPREADSHEET_ID
 from utils.google_forms import GoogleFormsAPI
-from views import ApplicationView
-from embeds import create_application_embed
+from .views import ApplicationView
+from .embeds import create_application_embed
 
 class Applications(commands.Cog):
     def __init__(self, bot):
