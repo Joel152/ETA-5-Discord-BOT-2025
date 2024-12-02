@@ -1,7 +1,7 @@
 import discord
 from discord.ui import Button, View
 from datetime import datetime
-from config import ADD_READ_ID, RESULTS_CHANNEL_ID
+from config import APP_READ_ID, RESULTS_CHANNEL_ID
 
 class ApplicationView(View):
     def __init__(self, application_id: str):
@@ -17,7 +17,7 @@ class ApplicationView(View):
         await self.process_decision(interaction, "denied")
 
     async def process_decision(self, interaction: discord.Interaction, decision: str):
-        if not any(role.id == ADD_READ_ID for role in interaction.user.roles):
+        if not any(role.id == APP_READ_ID for role in interaction.user.roles):
             await interaction.response.send_message("You don't have permission to do this!", ephemeral=True)
             return
 
