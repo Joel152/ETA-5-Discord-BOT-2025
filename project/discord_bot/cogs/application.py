@@ -74,7 +74,7 @@ def create_application_embed(application_id: int, response: list) -> discord.Emb
 class Applications(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.google_forms = GoogleFormsAPI('credentials.json')
+        self.google_forms = GoogleFormsAPI('project/discord_bot/credentials.json')
         self.last_processed_row = 0
         self.check_applications.start()
 
