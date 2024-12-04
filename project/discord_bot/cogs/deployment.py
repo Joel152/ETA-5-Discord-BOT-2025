@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from datetime import datetime
-from ..config import DEPLOYMENT_ROLE_ID, DEPLOYMENT_CHANNEL_ID, DEPLOYMENT_PING_ROLE
+from config import DEPLOYMENT_ROLE_ID, DEPLOYMENT_CHANNEL_ID, DEPLOYMENT_PING_ROLE
 
 class Deployment(commands.Cog):
     def __init__(self, bot):
