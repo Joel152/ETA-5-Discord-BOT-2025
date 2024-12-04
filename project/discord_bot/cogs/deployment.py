@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from config import DEPLOYMENT_ROLE_ID, DEPLOYMENT_CHANNEL_ID
+from config import DEPLOYMENT_ROLE_ID, DEPLOYMENT_CHANNEL_ID, DEPLOYMENT_PING_ROLE
 from datetime import datetime
 
 class Deployment(commands.Cog):
