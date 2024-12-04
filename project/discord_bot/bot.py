@@ -29,10 +29,10 @@ class DiscordBot(commands.Bot):
             await self.load_extension('cogs.deployment')
             await self.load_extension('cogs.member_welcome')
             await self.load_extension('cogs.status')
-            await self.load_extension('cogs.moderation.actions')
-            await self.load_extension('cogs.moderation.warnings')
-            await self.load_extension('cogs.member_events')
-            await self.load_extension('cogs.reports')
+            await self.load_extension('cogs.moderations.actions')
+            await self.load_extension('cogs.moderations.warnings')
+            await self.load_extension('cogs.moderations.member_events')
+            await self.load_extension('cogs.moderations.reports')
             await self.load_extension('utils.error_handler')
             
             # Sync slash commands
