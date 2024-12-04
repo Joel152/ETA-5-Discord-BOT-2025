@@ -4,7 +4,7 @@ Handles member join/leave events and welcome messages
 import discord
 from discord.ext import commands
 from config import WELCOME_CHANNEL_ID, FAREWELL_CHANNEL_ID
-from utils.embeds import create_welcome_embed, create_farewell_embed
+from ..utils.embeds import create_welcome_embed, create_farewell_embed
 
 class MemberEvents(commands.Cog):
     def __init__(self, bot):
