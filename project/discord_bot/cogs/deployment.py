@@ -48,8 +48,8 @@ class Deployment(commands.Cog):
         embed.set_footer(text=f"Time: {current_time} | Date: {current_date}")    
 
         # Mention the role above the embed
-        role_mention = f"<@&{DEPLOYMENT_PING_ROLE}>"
-        await deployment_channel.send(content=role_mention)
+        role_mention = f"<@&{DEPLOYMENT_PING_ROLE}> Deployment?"
+
 
         # Send the embed message and add the initial reaction
         poll_message = await deployment_channel.send(embed=embed)
