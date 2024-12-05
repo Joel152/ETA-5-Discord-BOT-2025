@@ -9,7 +9,7 @@ class ModLogger:
     def __init__(self, guild: discord.Guild):
         self.guild = guild
         self._log_channel = None
-        self._log_thread = None
+        self._log_post = None
 
     @property
     async def log_channel(self) -> discord.TextChannel:
@@ -19,13 +19,13 @@ class ModLogger:
         return self._log_channel
 
     @property
-    async def log_thread(self) -> discord.Thread:
+    async def log_thread(self) -> discord.Post:
         """Get the logging thread"""
-        if not self._log_thread:
+        if not self._log_post:
             channel = await self.log_channel
             if channel:
-                self._log_thread = channel.get_thread(MODERATION_THREAD_ID)
-        return self._log_thread
+                self._log_post = channel.get_post(MODERATION_THREAD_ID)
+        return self._log_post
 
     async def create_log_embed(
         self,
