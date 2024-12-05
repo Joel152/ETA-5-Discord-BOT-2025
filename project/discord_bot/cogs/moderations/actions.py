@@ -5,7 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from datetime import datetime, timedelta
-from ...config import MOD_ROLE_ID
+from config import MOD_ROLE_ID
 from ...utils.logging import log_kick, log_ban, log_timeout
 
 class ModerationActions(commands.Cog):
