@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
-from typing import Optional
 from config import (
     DEPLOYMENT_CHANNEL_ID,
     DEPLOYMENT_PING_ROLE,
@@ -10,116 +9,168 @@ from config import (
     MAIN_FACTION_ID,
 )
 
-
 class PollAndEvent(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def create_embed(self, event_type: str, author: discord.Member, **kwargs) -> discord.Embed:
+    def generate_embed(self, title: str, description: str, author: discord.Member, **kwargs) -> discord.Embed:
         """
-        Creates a preset embed for the selected event type with user-provided inputs.
+        Generate a customizable embed with dynamic fields.
         """
         current_time = datetime.now().strftime("%H:%M")
         current_date = datetime.now().strftime("%Y-%m-%d")
-
+        
         embed = discord.Embed(
-            title=f"{event_type} Event",
-            color=discord.Color.blue(),
-            timestamp=datetime.utcnow()
+            title=title,
+            description=description,
+            color=discord.Color.blue()
         )
-        embed.add_field(name="Host", value=author.mention, inline=True)
+        embed.set_author(name=author.display_name, icon_url=author.display_avatar.url)
         
-        if kwargs.get("co_host"):
+        if "host" in kwargs:
+            embed.add_field(name="Host", value=kwargs["host"].mention, inline=True)
+        if "co_host" in kwargs and kwargs["co_host"]:
             embed.add_field(name="Co-Host", value=kwargs["co_host"].mention, inline=True)
-        
-        if kwargs.get("site"):
-            embed.add_field(name="Site", value=kwargs["site"], inline=True)
-        
-        if kwargs.get("spawn"):
+        if "site" in kwargs:
+            embed.add_field(name="Site", value=kwargs["site"], inline=False)
+        if "spawn" in kwargs:
             embed.add_field(name="Spawn", value=kwargs["spawn"], inline=False)
+        if "instructions" in kwargs:
+            embed.add_field(name="Instructions", value=kwargs["instructions"], inline=False)
+        if "course" in kwargs:
+            embed.add_field(name="Course", value=kwargs["course"], inline=False)
         
-        embed.add_field(name="Details", value=kwargs.get("details", "Follow event-specific instructions."), inline=False)
         embed.set_footer(text=f"Time: {current_time} | Date: {current_date}")
-
         return embed
 
-    @commands.command(name="poll")
-    async def poll_command(self, ctx, event_type: str, site: Optional[str] = None, spawn: Optional[str] = None):
-        """
-        Create a poll via prefix command.
-        """
-        event_type = event_type.capitalize()
-        valid_types = ["Deployment", "Tryout", "Training", "Gamenight"]
-
-        if event_type not in valid_types:
-            await ctx.send(f"❌ Invalid event type! Valid types: {', '.join(valid_types)}.")
-            return
-
-        channel = self.bot.get_channel(DEPLOYMENT_CHANNEL_ID)
-        if not channel:
-            await ctx.send("❌ Deployment channel not found. Please contact an administrator.")
-            return
-
-        # Event-specific settings
-        if event_type == "Deployment":
-            content = f"<@&{DEPLOYMENT_PING_ROLE}> Deployment Poll!"
-            details = "Vote below."
-        elif event_type == "Tryout":
-            content = f"<@&{AWAITING_TRYOUT_ID}> Tryout Poll!"
-            details = (
-                "**How to Join?**\n"
-                "- Spawn as [Team]\n"
-                "- Say `!eta-5` on the radio\n\n"
-                "**Rules:**\n"
-                "- Follow OOS (Oath of Silence).\n"
-                "- Stay with the host as much as you can.\n"
-                "- No trolling or goofing around.\n"
-                "- Follow site rules at all times."
-            )
-        elif event_type == "Training":
-            content = f"<@&{MAIN_FACTION_ID}> Training Poll!"
-            details = "Training details vary. Check event-specific announcements."
-        else:  # Gamenight
-            content = "🎮 Gamenight! Join us for fun and games!"
-            details = "Bring your friends and have a great time!"
-
-        embed = self.create_embed(
-            event_type, ctx.author, site=site, spawn=spawn, details=details
-        )
-        poll_message = await channel.send(content=content, embed=embed)
-        await poll_message.add_reaction("✅")
-        await ctx.send(f"{event_type} poll created in {channel.mention}.")
-
-    @app_commands.command(name="poll", description="Create a poll for events like Deployment, Training, etc.")
-    @app_commands.choices(
-        event_type=[
-            app_commands.Choice(name="Deployment", value="Deployment"),
-            app_commands.Choice(name="Tryout", value="Tryout"),
-            app_commands.Choice(name="Training", value="Training"),
-            app_commands.Choice(name="Gamenight", value="Gamenight"),
-        ]
-    )
-    async def poll_slash(
-        self, interaction: discord.Interaction, event_type: app_commands.Choice[str], site: Optional[str] = None, spawn: Optional[str] = None
+    async def post_poll_or_event(
+        self,
+        interaction_or_context,
+        event_type: str,
+        host: discord.Member,
+        co_host: discord.Member = None,
+        site: str = None,
+        spawn: str = None,
+        instructions: str = None,
+        course: str = None,
     ):
         """
-        Slash command for creating a poll.
+        Handles the posting of polls or events to the appropriate channel.
         """
-        await self.poll_command(interaction, event_type.value, site=site, spawn=spawn)
+        channel = self.bot.get_channel(DEPLOYMENT_CHANNEL_ID)
+        if not channel:
+            await interaction_or_context.send("❌ Deployment channel not found. Please contact an administrator.")
+            return
+        
+        embed = self.generate_embed(
+            title=f"{event_type} Event",
+            description=f"{event_type} poll or event created!",
+            author=host,
+            host=host,
+            co_host=co_host,
+            site=site,
+            spawn=spawn,
+            instructions=instructions,
+            course=course,
+        )
+        
+        content = None
+        if event_type.lower() == "deployment":
+            content = f"<@&{DEPLOYMENT_PING_ROLE}> Deployment?"
+        elif event_type.lower() == "tryout":
+            content = f"<@&{AWAITING_TRYOUT_ID}> Tryout?"
+        elif event_type.lower() in ["training", "gamenight"]:
+            content = f"<@&{MAIN_FACTION_ID}> {event_type.capitalize()} Event!"
+        
+        message = await channel.send(content=content, embed=embed)
+        await message.add_reaction("✅")
+        if isinstance(interaction_or_context, discord.Interaction):
+            await interaction_or_context.response.send_message(f"{event_type.capitalize()} posted in {channel.mention}.")
+        else:
+            await interaction_or_context.send(f"{event_type.capitalize()} posted in {channel.mention}.")
+
+    @commands.command(name="poll")
+    async def poll_command(self, ctx, event_type: str):
+        """
+        Prefix command to create a poll for a specified event type.
+        """
+        if event_type.lower() not in ["deployment", "tryout", "training", "gamenight"]:
+            await ctx.send("❌ Invalid event type! Valid types: Deployment, Tryout, Training, Gamenight.")
+            return
+        await self.post_poll_or_event(ctx, event_type.capitalize(), host=ctx.author)
+
+    @app_commands.command(name="poll", description="Create a poll for an event.")
+    @app_commands.choices(
+        event_type=[
+            app_commands.Choice(name="Deployment", value="deployment"),
+            app_commands.Choice(name="Tryout", value="tryout"),
+            app_commands.Choice(name="Training", value="training"),
+            app_commands.Choice(name="Gamenight", value="gamenight"),
+        ]
+    )
+    async def poll_slash(self, interaction: discord.Interaction, event_type: app_commands.Choice[str]):
+        """
+        Slash command to create a poll for a specified event type.
+        """
+        await self.post_poll_or_event(interaction, event_type.name.capitalize(), host=interaction.user)
 
     @commands.command(name="event")
-    async def event_command(self, ctx, event_type: str, *, additional_info=None):
+    async def event_command(
+        self,
+        ctx,
+        event_type: str,
+        site: str = "Site-45",
+        spawn: str = "Spawn as ETA-5",
+        instructions: str = "Follow event rules.",
+        course: str = "Details to be added.",
+    ):
         """
-        Create an event announcement via prefix command.
+        Prefix command to create an event with detailed configurations.
         """
-        await self.poll_command(ctx, event_type, additional_info)
+        if event_type.lower() not in ["deployment", "tryout", "training", "gamenight"]:
+            await ctx.send("❌ Invalid event type! Valid types: Deployment, Tryout, Training, Gamenight.")
+            return
+        await self.post_poll_or_event(
+            ctx,
+            event_type.capitalize(),
+            host=ctx.author,
+            site=site,
+            spawn=spawn,
+            instructions=instructions,
+            course=course,
+        )
 
-    @app_commands.command(name="event", description="Create an event announcement.")
-    async def event_slash(self, interaction: discord.Interaction, event_type: str):
+    @app_commands.command(name="event", description="Create an event with details.")
+    @app_commands.choices(
+        event_type=[
+            app_commands.Choice(name="Deployment", value="deployment"),
+            app_commands.Choice(name="Tryout", value="tryout"),
+            app_commands.Choice(name="Training", value="training"),
+            app_commands.Choice(name="Gamenight", value="gamenight"),
+        ]
+    )
+    async def event_slash(
+        self,
+        interaction: discord.Interaction,
+        event_type: app_commands.Choice[str],
+        site: str = "Site-45",
+        spawn: str = "Spawn as ETA-5",
+        instructions: str = "Follow event rules.",
+        course: str = "Details to be added.",
+    ):
         """
-        Slash command for creating an event announcement.
+        Slash command to create an event with detailed configurations.
         """
-        await self.event_command(interaction.channel, event_type)
+        await self.post_poll_or_event(
+            interaction,
+            event_type.name.capitalize(),
+            host=interaction.user,
+            site=site,
+            spawn=spawn,
+            instructions=instructions,
+            course=course,
+        )
+
 
 async def setup(bot):
     await bot.add_cog(PollAndEvent(bot))
