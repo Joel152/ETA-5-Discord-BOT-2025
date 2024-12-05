@@ -5,7 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from config import REPORTS_CHANNEL_ID, MOD_ROLE_ID
-from ..utils.embeds import create_report_embed
+from utils.embeds import create_report_embed
 
 class Reports(commands.Cog):
     def __init__(self, bot):
