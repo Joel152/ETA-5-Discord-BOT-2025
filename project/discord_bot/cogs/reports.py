@@ -4,7 +4,7 @@ Handles user reports and incident management with both traditional and slash com
 import discord
 from discord import app_commands
 from discord.ext import commands
-from ..config import REPORTS_CHANNEL_ID, MOD_ROLE_ID
+from config import REPORTS_CHANNEL_ID, MOD_ROLE_ID
 from ..utils.embeds import create_report_embed
 
 class Reports(commands.Cog):
