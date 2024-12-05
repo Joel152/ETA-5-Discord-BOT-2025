@@ -1,61 +1,135 @@
 """
-Utility functions for logging moderation actions in a thread
+Comprehensive logging system for moderation actions
 """
 import discord
 from datetime import datetime
 from config import MODERATION_CHANNEL_ID, MODERATION_THREAD_ID
 
-async def get_log_thread(guild: discord.Guild) -> discord.Thread:
-    """Get or notify about the logging thread"""
-    channel = guild.get_channel(MODERATION_CHANNEL_ID)
-    if not channel:
-        return None
+class ModLogger:
+    def __init__(self, guild: discord.Guild):
+        self.guild = guild
+        self._log_channel = None
+        self._log_thread = None
 
-    thread = channel.get_thread(MODERATION_THREAD_ID)
-    if not thread:
-        # Notify moderators that the thread is missing
-        await channel.send(f"⚠️ Warning: Moderation log thread not found! Please check the thread ID: {MODERATION_THREAD_ID}")
-        return None
-        
-    return thread
+    @property
+    async def log_channel(self) -> discord.TextChannel:
+        """Get the logging channel"""
+        if not self._log_channel:
+            self._log_channel = self.guild.get_channel(MODERATION_CHANNEL_ID)
+        return self._log_channel
 
-async def log_warning(guild: discord.Guild, target: discord.Member, moderator: discord.Member, reason: str):
-    """Log a warning action"""
-    thread = await get_log_thread(guild)
-    if thread:
-        await thread.send(
-            f"⚠️ **Warning**\n"
-            f"User {target.mention} (`{target.id}`) has been warned by {moderator.mention}\n"
-            f"**Reason:** {reason}"
+    @property
+    async def log_thread(self) -> discord.Thread:
+        """Get the logging thread"""
+        if not self._log_thread:
+            channel = await self.log_channel
+            if channel:
+                self._log_thread = channel.get_thread(MODERATION_THREAD_ID)
+        return self._log_thread
+
+    async def create_log_embed(
+        self,
+        action: str,
+        target: discord.Member,
+        moderator: discord.Member,
+        reason: str,
+        **kwargs
+    ) -> discord.Embed:
+        """Create a standardized embed for logging"""
+        color_map = {
+            "Kick": discord.Color.orange(),
+            "Ban": discord.Color.red(),
+            "Timeout": discord.Color.yellow(),
+            "Warning": discord.Color.gold(),
+            "Unban": discord.Color.green(),
+            "Report": discord.Color.blue()
+        }
+
+        embed = discord.Embed(
+            title=f"Moderation Action: {action}",
+            color=color_map.get(action, discord.Color.greyple()),
+            timestamp=datetime.utcnow()
         )
+
+        embed.add_field(name="Target", value=f"{target.mention} (`{target.id}`)", inline=True)
+        embed.add_field(name="Moderator", value=moderator.mention, inline=True)
+        embed.add_field(name="Reason", value=reason, inline=False)
+
+        # Add any additional fields from kwargs
+        for key, value in kwargs.items():
+            embed.add_field(name=key.replace('_', ' ').title(), value=str(value), inline=True)
+
+        embed.set_footer(text=f"User ID: {target.id}")
+        
+        if target.display_avatar:
+            embed.set_thumbnail(url=target.display_avatar.url)
+
+        return embed
+
+    async def log_action(
+        self,
+        action: str,
+        target: discord.Member,
+        moderator: discord.Member,
+        reason: str,
+        **kwargs
+    ) -> bool:
+        """Log a moderation action to the designated channel/thread"""
+        try:
+            thread = await self.log_thread
+            if not thread:
+                channel = await self.log_channel
+                if not channel:
+                    return False
+                
+                # If no thread exists, log to channel
+                embed = await self.create_log_embed(action, target, moderator, reason, **kwargs)
+                await channel.send(embed=embed)
+            else:
+                # Log to thread if it exists
+                embed = await self.create_log_embed(action, target, moderator, reason, **kwargs)
+                await thread.send(embed=embed)
+            return True
+        except Exception as e:
+            print(f"Error logging moderation action: {e}")
+            return False
 
 async def log_kick(guild: discord.Guild, target: discord.Member, moderator: discord.Member, reason: str):
     """Log a kick action"""
-    thread = await get_log_thread(guild)
-    if thread:
-        await thread.send(
-            f"👢 **Kick**\n"
-            f"User {target.mention} (`{target.id}`) has been kicked by {moderator.mention}\n"
-            f"**Reason:** {reason}"
-        )
+    logger = ModLogger(guild)
+    await logger.log_action("Kick", target, moderator, reason)
 
 async def log_ban(guild: discord.Guild, target: discord.Member, moderator: discord.Member, reason: str):
     """Log a ban action"""
-    thread = await get_log_thread(guild)
-    if thread:
-        await thread.send(
-            f"🔨 **Ban**\n"
-            f"User {target.mention} (`{target.id}`) has been banned by {moderator.mention}\n"
-            f"**Reason:** {reason}"
-        )
+    logger = ModLogger(guild)
+    await logger.log_action("Ban", target, moderator, reason)
 
 async def log_timeout(guild: discord.Guild, target: discord.Member, moderator: discord.Member, duration: int, reason: str):
     """Log a timeout action"""
-    thread = await get_log_thread(guild)
-    if thread:
-        await thread.send(
-            f"⏰ **Timeout**\n"
-            f"User {target.mention} (`{target.id}`) has been put in timeout by {moderator.mention}\n"
-            f"**Duration:** {duration} minutes\n"
-            f"**Reason:** {reason}"
-        )
+    logger = ModLogger(guild)
+    await logger.log_action("Timeout", target, moderator, reason, duration=f"{duration} minutes")
+
+async def log_warning(guild: discord.Guild, target: discord.Member, moderator: discord.Member, reason: str):
+    """Log a warning action"""
+    logger = ModLogger(guild)
+    await logger.log_action("Warning", target, moderator, reason)
+
+async def log_unban(guild: discord.Guild, target: discord.User, moderator: discord.Member, reason: str):
+    """Log an unban action"""
+    logger = ModLogger(guild)
+    await logger.log_action("Unban", target, moderator, reason)
+
+async def log_report(
+    guild: discord.Guild,
+    target: discord.Member,
+    reporter: discord.Member,
+    reason: str,
+    channel: discord.TextChannel,
+    evidence: str = None
+):
+    """Log a user report"""
+    logger = ModLogger(guild)
+    kwargs = {"Channel": channel.mention}
+    if evidence:
+        kwargs["Evidence"] = evidence
+    await logger.log_action("Report", target, reporter, reason, **kwargs)
