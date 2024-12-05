@@ -42,6 +42,7 @@ class DiscordBot(commands.Bot):
         except Exception as e:
             self.logger.error(f'Error during setup: {str(e)}')
             raise
+            
         
     async def on_ready(self):
         self.logger.info(f'{self.user} has connected to Discord!')
@@ -61,6 +62,13 @@ async def main():
     except Exception as e:
         logger.error(f'Fatal error: {str(e)}')
         raise
+
+        # Sync slash commands
+        try:
+            synced = await self.tree.sync()
+            logger.info(f'Slash commands synced: {len(synced)} commands')
+        except Exception as e:
+            logger.error(f'Failed to sync slash commands: {e}')
 
 if __name__ == "__main__":
     asyncio.run(main())
