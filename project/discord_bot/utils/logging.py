@@ -3,29 +3,27 @@ Comprehensive logging system for moderation actions
 """
 import discord
 from datetime import datetime
-from config import MODERATION_CHANNEL_ID, MODERATION_THREAD_ID
+from config import MODERATION_CHANNEL_ID, MODERATION_THREAD_ID  # Fetch IDs from the configuration file
 
 class ModLogger:
     def __init__(self, guild: discord.Guild):
         self.guild = guild
         self._log_channel = None
-        self._log_post = None
+        self._log_thread = None
 
-    @property
-    async def log_channel(self) -> discord.TextChannel:
+    async def get_log_channel(self) -> discord.TextChannel:
         """Get the logging channel"""
         if not self._log_channel:
             self._log_channel = self.guild.get_channel(MODERATION_CHANNEL_ID)
         return self._log_channel
 
-    @property
-    async def log_thread(self) -> discord.Post:
+    async def get_log_thread(self) -> discord.Thread:
         """Get the logging thread"""
-        if not self._log_post:
-            channel = await self.log_channel
+        if not self._log_thread:
+            channel = await self.get_log_channel()
             if channel:
-                self._log_post = channel.get_post(MODERATION_THREAD_ID)
-        return self._log_post
+                self._log_thread = discord.utils.get(channel.threads, id=MODERATION_THREAD_ID)
+        return self._log_thread
 
     async def create_log_embed(
         self,
@@ -74,26 +72,25 @@ class ModLogger:
         reason: str,
         **kwargs
     ) -> bool:
-        """Log a moderation action to the designated channel/thread"""
+        """Log a moderation action to the designated channel or thread"""
         try:
-            thread = await self.log_thread
-            if not thread:
-                channel = await self.log_channel
+            thread = await self.get_log_thread()
+            embed = await self.create_log_embed(action, target, moderator, reason, **kwargs)
+            
+            if thread:
+                await thread.send(embed=embed)
+            else:
+                channel = await self.get_log_channel()
                 if not channel:
                     return False
-                
-                # If no thread exists, log to channel
-                embed = await self.create_log_embed(action, target, moderator, reason, **kwargs)
                 await channel.send(embed=embed)
-            else:
-                # Log to thread if it exists
-                embed = await self.create_log_embed(action, target, moderator, reason, **kwargs)
-                await thread.send(embed=embed)
             return True
         except Exception as e:
             print(f"Error logging moderation action: {e}")
             return False
 
+
+# Helper functions for specific moderation actions
 async def log_kick(guild: discord.Guild, target: discord.Member, moderator: discord.Member, reason: str):
     """Log a kick action"""
     logger = ModLogger(guild)
