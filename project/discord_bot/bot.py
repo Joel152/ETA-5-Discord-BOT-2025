@@ -32,7 +32,7 @@ class DiscordBot(commands.Bot):
             await self.load_extension('cogs.moderations.actions')
             await self.load_extension('cogs.moderations.warnings')
             await self.load_extension('cogs.moderations.member_events')
-            await self.load_extension('cogs.moderations.reports')
+            await self.load_extension('cogs.reports')
             await self.load_extension('utils.error_handler')
             
             # Sync slash commands
